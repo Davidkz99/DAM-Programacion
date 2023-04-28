@@ -11,17 +11,38 @@ import java.sql.SQLException;
  */
 public class DataBaseConnection {
 	private Connection connection;
-	public boolean conectar() {		
+	public boolean conectar(String url) {		
 		try {
 			//cargar el driver
-			DriverManager.registerDriver (new com.mysql.cj.jdbc.Driver());			
+			DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());			
 
 			//crear un objeto de conexión
-			this.connection = DriverManager.getConnection("jdbc:mysql://localhost/anime?user=root&password=root");			
+			this.connection = DriverManager.getConnection(url);			
 		} catch (SQLException e) {			
 			e.printStackTrace();
 		}
 		return connection==null?false:true;
 	}
-	
+
+	public boolean desconectar() {
+		try {
+			this.connection.close();
+			return true;
+		} catch (SQLException e) {			
+			return false;
+		}
+	}
+
+	public Connection getConnection() {
+		return this.connection;
+	}
+
+	public boolean estaConectado() {
+		try {
+			return !this.connection.isClosed();
+		} catch (SQLException e) {			
+			e.printStackTrace();
+			return false;
+		}
+	}
 }

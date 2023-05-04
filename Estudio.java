@@ -1,7 +1,5 @@
 package dam.tema8.proyecto;
 
-import java.util.Objects;
-
 public class Estudio {
 	private int id;
 	private String nombre;

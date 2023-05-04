@@ -55,7 +55,7 @@ public class Serie {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id);
+		return Objects.hash(id, nombre);
 	}
 
 	@Override
@@ -67,7 +67,10 @@ public class Serie {
 		if (getClass() != obj.getClass())
 			return false;
 		Serie other = (Serie) obj;
-		return id == other.id;
+		return id == other.id && Objects.equals(nombre, other.nombre);
 	}
+
+	
+	
 	
 }

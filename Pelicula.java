@@ -6,14 +6,14 @@ public class Pelicula {
 	private int id;
 	private String nombre;
 	private int duracionMinutos;
-	private Estudio id_estudio;
+	private Estudio idEstudio;
 	
-	public Pelicula(int id, String nombre, int duracionMinutos, Estudio id_estudio) {
+	public Pelicula(int id, String nombre, int duracionMinutos, Estudio idEstudio) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
 		this.duracionMinutos = duracionMinutos;
-		this.id_estudio = id_estudio;
+		this.idEstudio = idEstudio;
 	}
 
 	public int getId() {
@@ -40,18 +40,23 @@ public class Pelicula {
 		this.duracionMinutos = duracionMinutos;
 	}
 
-	public Estudio getId_estudio() {
-		return id_estudio;
+	public Estudio getIdEstudio() {
+		return idEstudio;
 	}
 
-	public void setId_estudio(Estudio id_estudio) {
-		this.id_estudio = id_estudio;
+	public void setIdEstudio(Estudio idEstudio) {
+		this.idEstudio = idEstudio;
 	}
 
 	@Override
 	public String toString() {
-		return "Pelicula [id=" + id + ", nombre=" + nombre + ", duracionMinutos=" + duracionMinutos + ", id_estudio="
-				+ id_estudio + "]";
+		return "Pelicula [id=" + id + ", nombre=" + nombre + ", duracionMinutos=" + duracionMinutos + ", idEstudio="
+				+ idEstudio + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, nombre);
 	}
 
 	@Override
@@ -63,7 +68,12 @@ public class Pelicula {
 		if (getClass() != obj.getClass())
 			return false;
 		Pelicula other = (Pelicula) obj;
-		return id == other.id;
+		return id == other.id && Objects.equals(nombre, other.nombre);
 	}
+
+	
+	
+	
+	
 	
 }

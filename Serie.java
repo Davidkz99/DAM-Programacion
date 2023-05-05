@@ -3,6 +3,7 @@ package dam.tema8.proyecto;
 import java.util.Objects;
 
 public class Serie {
+	public static final String CAMPOS = "id_serie, nombre_serie, numero_episodios";
 	private int id;
 	private String nombre;
 	private int numEpisodios;

@@ -1,7 +1,7 @@
 package dam.tema8.proyecto;
 /**
- * 
- * @author usuario
+ * Prueba para comprobar la subida a la nube en GitHub
+ * @author David
  *
  */
 public class PruebaGitHub {

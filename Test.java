@@ -25,6 +25,9 @@ public class Test {
 			for (Pelicula pelicula : peliculas) {
 				System.out.println(pelicula);
 			}
+			
+			//Mostrar una tabla filtrada por al menos por 2 campos
+//			ArrayList<Serie> seriesFiltradas = databaseManager.getSeries("nombre_serie", "Death Note");
 		}
 	}
 }

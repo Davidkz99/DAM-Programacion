@@ -30,7 +30,7 @@ public class Gestion {
 			e.printStackTrace();
 		}
 	}
-	
+
 	//Método para poder guardar en un ArrayList todas las series
 	public ArrayList<Serie> getSeries(){
 		ArrayList<Serie> serie = null;
@@ -50,7 +50,6 @@ public class Gestion {
 				if(rsEstudio.next()) {
 					estudio = new Estudio(rsEstudio.getInt(1), rsEstudio.getString(2));
 				}
-
 				serie.add(new Serie(rsSerie.getInt(1),
 						rsSerie.getString(2),
 						rsSerie.getInt(3),
@@ -61,7 +60,7 @@ public class Gestion {
 		}
 		return serie;
 	}
-	
+
 	//Método para poner guardar en un ArrayList todas las películas
 	public ArrayList<Pelicula> getPeliculas(){
 		ArrayList<Pelicula> serie = null;
@@ -81,7 +80,6 @@ public class Gestion {
 				if(rsEstudio.next()) {
 					estudio = new Estudio(rsEstudio.getInt(1), rsEstudio.getString(2));
 				}
-
 				serie.add(new Pelicula(rsSerie.getInt(1),
 						rsSerie.getString(2),
 						rsSerie.getInt(3),
@@ -92,6 +90,6 @@ public class Gestion {
 		}
 		return serie;
 	}
-	
-	
+
+
 }

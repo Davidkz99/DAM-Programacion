@@ -3,18 +3,18 @@ package dam.tema8.proyecto;
 import java.util.Objects;
 
 public class Serie {
-	public static final String CAMPOS = "id_serie, nombre_serie, numero_episodios";
+	public static final String CAMPOS = "id_serie, nombre_serie, numero_episodios"; //Hacer split para recoger los campos existentes en la tabla
 	private int id;
 	private String nombre;
 	private int numEpisodios;
-	private Estudio idEstudio;
+	private Estudio estudio;
 	
 	public Serie(int id, String nombre, int numEpisodios, Estudio idEstudio) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
 		this.numEpisodios = numEpisodios;
-		this.idEstudio = idEstudio;
+		this.estudio = idEstudio;
 	}
 
 	public int getId() {
@@ -41,17 +41,18 @@ public class Serie {
 		this.numEpisodios = numEpisodios;
 	}
 	
-	public Estudio getId_estudio() {
-		return idEstudio;
+	public int getId_estudio() {
+		return this.estudio.getId();
 	}
 
 	public void setId_estudio(Estudio id_estudio) {
-		this.idEstudio = id_estudio;
+		this.estudio = id_estudio;
 	}
 
 	@Override
 	public String toString() {
-		return "Serie [id=" + id + ", nombre=" + nombre + ", numEpisodios=" + numEpisodios + "]";
+		return "Serie [id=" + id + ", nombre=" + nombre + ", numEpisodios=" + numEpisodios + ", estudio=" + estudio
+				+ "]";
 	}
 
 	@Override

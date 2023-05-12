@@ -1,6 +1,8 @@
 package dam.tema8.proyecto;
 
+
 public class Estudio {
+	public static final String CAMPOS = "id_estudio, nombre_estudio"; //Hacer split para recoger los campos existentes en la tabla
 	private int id;
 	private String nombre;
 	public Estudio(int id) {

@@ -2,19 +2,20 @@ package dam.tema8.proyecto;
 
 import java.util.Objects;
 
+
 public class Pelicula {
 	public static final String CAMPOS = "id_pelicula, nombre_pelicula, duracion_minutos";
 	private int id;
 	private String nombre;
 	private int duracionMinutos;
-	private Estudio idEstudio;
+	private Estudio estudio;
 	
 	public Pelicula(int id, String nombre, int duracionMinutos, Estudio idEstudio) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
 		this.duracionMinutos = duracionMinutos;
-		this.idEstudio = idEstudio;
+		this.estudio = idEstudio;
 	}
 
 	public int getId() {
@@ -41,18 +42,18 @@ public class Pelicula {
 		this.duracionMinutos = duracionMinutos;
 	}
 
-	public Estudio getIdEstudio() {
-		return idEstudio;
+	public int getId_estudio() {
+		return this.estudio.getId();
 	}
 
 	public void setIdEstudio(Estudio idEstudio) {
-		this.idEstudio = idEstudio;
+		this.estudio = idEstudio;
 	}
 
 	@Override
 	public String toString() {
-		return "Pelicula [id=" + id + ", nombre=" + nombre + ", duracionMinutos=" + duracionMinutos + ", idEstudio="
-				+ idEstudio + "]";
+		return "Pelicula [id=" + id + ", nombre=" + nombre + ", duracionMinutos=" + duracionMinutos + ", estudio="
+				+ estudio + "]";
 	}
 
 	@Override
@@ -78,3 +79,4 @@ public class Pelicula {
 	
 	
 }
+

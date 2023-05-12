@@ -12,13 +12,15 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Scanner;
 
 import dam.tema5.actividades.NonNull;
-import dam.tema8.Book;
 
 public class Gestion {
 	private Connection connection=null;
 	private Statement statement=null;
+	private PreparedStatement pStatement=null;
+	Scanner lector = new Scanner(System.in);
 	/**
 	 * Constructor especializado en inicializar objetos
 	 * de tipo DatabaseManager a partir de un objeto de conexión
@@ -67,14 +69,14 @@ public class Gestion {
 
 	//Método para poner guardar en un ArrayList todas las películas
 	public ArrayList<Pelicula> getPeliculas(){
-		ArrayList<Pelicula> series = null;
+		ArrayList<Pelicula> peliculas = null;
 		Estudio estudio = null;
 		PreparedStatement psEstudio=null;
 		ResultSet rsEstudio;
 		try {
 			PreparedStatement psSerie = this.connection.prepareStatement("SELECT id_pelicula, nombre_pelicula, duracion_minutos, id_estudio FROM pelicula");
 			ResultSet rsSerie = psSerie.executeQuery();
-			series = new ArrayList<Pelicula>();
+			peliculas = new ArrayList<Pelicula>();
 			while(rsSerie.next()) {
 				psEstudio = this.connection.prepareStatement("SELECT * FROM estudio where id_estudio=?");
 				psEstudio.setInt(1, rsSerie.getInt(4));
@@ -84,7 +86,7 @@ public class Gestion {
 				if(rsEstudio.next()) {
 					estudio = new Estudio(rsEstudio.getInt(1), rsEstudio.getString(2));
 				}
-				series.add(new Pelicula(rsSerie.getInt(1),
+				peliculas.add(new Pelicula(rsSerie.getInt(1),
 						rsSerie.getString(2),
 						rsSerie.getInt(3),
 						estudio));
@@ -93,75 +95,114 @@ public class Gestion {
 		} catch (SQLException e) {			
 			e.printStackTrace();
 		}
-		return series;
+		return peliculas;
+	}
+
+	//Método para mostrar la tabla Serie filtrada por un campo
+	//	public ArrayList<Serie> getSeries(HashMap<String,String> filter){
+	//		ArrayList<Serie> series = null;
+	//		Estudio estudio = null;
+	//		PreparedStatement psEstudio=null;
+	//		ResultSet rsEstudio;
+	//		int i=0, type=Types.VARCHAR;
+	//		String whereData="";
+	//		try {
+	//			for(String key:filter.keySet()) {
+	//				whereData += key + "=? AND ";
+	//				//Busco los campos que me pasan para el where en los campos que tiene la tabla series
+	//				//si algun campo no está, el metodo termina, devolviendo null;
+	//				if (Serie.CAMPOS.indexOf(key)< 0) {
+	//					return series;
+	//				} else {
+	//					return null;
+	//				}
+	//			}
+	//			
+	//			whereData = whereData.substring(0, whereData.length()-5);
+	//			PreparedStatement psSerie = this.connection.prepareStatement("SELECT id_serie, nombre_serie, "
+	//					+ "numero_episodios, id_estudio FROM serie WHERE " + whereData);
+	//	
+	//			for(Object value:filter.values()) {
+	//				if(value instanceof Integer) {
+	//					type = Types.INTEGER;
+	//				}else if(value instanceof Float) {
+	//					type = Types.FLOAT;
+	//				}else if(value instanceof Double) {
+	//					type = Types.DOUBLE;
+	//				}else if(value instanceof String) {
+	//					type = Types.VARCHAR;
+	//				}
+	//				psSerie.setObject(++i, value, type);				
+	//			}
+	//			
+	//			ResultSet rsSerie = psSerie.executeQuery();
+	//			series = new ArrayList<Serie>();
+	//			while(rsSerie.next()) {
+	//				psEstudio = this.connection.prepareStatement("SELECT * FROM estudio where " + whereData);
+	//				psEstudio.setInt(1, rsSerie.getInt(4));
+	//
+	//				rsEstudio = psEstudio.executeQuery();
+	//
+	//				if(rsEstudio.next()) {
+	//					estudio = new Estudio(rsEstudio.getInt(1), rsEstudio.getString(2));
+	//				}
+	//				series.add(new Serie(rsSerie.getInt(1),
+	//						rsSerie.getString(2),
+	//						rsSerie.getInt(3),
+	//						estudio));
+	//			}
+	//			this.statement.close();
+	//		} catch (SQLException e) {			
+	//			e.printStackTrace();
+	//		}
+	//		return series;
+	//	}
+
+	//Método para obtener los datos de una consulta de manera ordenada por alguno de los campos seleccionados
+
+	//Método para modificar registros en una tabla
+
+	//Método para añadir series a la tabla de uno en uno
+	public boolean crearSerie(Serie serie) {
+		String insert="";
+		boolean added=false;
+		
+		try {			
+			this.pStatement = this.connection.prepareStatement("INSERT INTO serie (nombre_serie,"
+					+ "numero_episodios, id_estudio) VALUES(?,?,?)");
+			this.pStatement.setString(1, serie.getNombre());
+			this.pStatement.setInt(2, serie.getNumEpisodios());
+			this.pStatement.setInt(3, serie.getId_estudio());
+			
+			added = this.pStatement.executeUpdate()>0;
+													
+		    return added;
+		}catch(SQLException e) {
+			e.printStackTrace();
+			return added;
+		}
 	}
 	
-	//Método para mostrar la tabla Serie filtrada por un campo
-//	public ArrayList<Serie> getSeries(HashMap<String,String> filter){
-//		ArrayList<Serie> series = null;
-//		Estudio estudio = null;
-//		PreparedStatement psEstudio=null;
-//		ResultSet rsEstudio;
-//		int i=0, type=Types.VARCHAR;
-//		String whereData="";
-//		try {
-//			for(String key:filter.keySet()) {
-//				whereData += key + "=? AND ";
-//				//Busco los campos que me pasan para el where en los campos que tiene la tabla series
-//				//si algun campo no está, el metodo termina, devolviendo null;
-//				if (Serie.CAMPOS.indexOf(key)< 0) {
-//					return series;
-//				} else {
-//					return null;
-//				}
-//			}
-//			
-//			whereData = whereData.substring(0, whereData.length()-5);
-//			PreparedStatement psSerie = this.connection.prepareStatement("SELECT id_serie, nombre_serie, "
-//					+ "numero_episodios, id_estudio FROM serie WHERE " + whereData);
-//	
-//			for(Object value:filter.values()) {
-//				if(value instanceof Integer) {
-//					type = Types.INTEGER;
-//				}else if(value instanceof Float) {
-//					type = Types.FLOAT;
-//				}else if(value instanceof Double) {
-//					type = Types.DOUBLE;
-//				}else if(value instanceof String) {
-//					type = Types.VARCHAR;
-//				}
-//				psSerie.setObject(++i, value, type);				
-//			}
-//			
-//			ResultSet rsSerie = psSerie.executeQuery();
-//			series = new ArrayList<Serie>();
-//			while(rsSerie.next()) {
-//				psEstudio = this.connection.prepareStatement("SELECT * FROM estudio where " + whereData);
-//				psEstudio.setInt(1, rsSerie.getInt(4));
-//
-//				rsEstudio = psEstudio.executeQuery();
-//
-//				if(rsEstudio.next()) {
-//					estudio = new Estudio(rsEstudio.getInt(1), rsEstudio.getString(2));
-//				}
-//				series.add(new Serie(rsSerie.getInt(1),
-//						rsSerie.getString(2),
-//						rsSerie.getInt(3),
-//						estudio));
-//			}
-//			this.statement.close();
-//		} catch (SQLException e) {			
-//			e.printStackTrace();
-//		}
-//		return series;
-//	}
-	
-	//Método para obtener los datos de una consulta de manera ordenada por alguno de los campos seleccionados
-	
-	//Método para modificar registros en una tabla
-	
-	//Método para añadir registros a la tabla de uno en uno
-	
+	//Método para añadir películas a la tabla de uno en uno
+		public boolean crearPelicula(Pelicula pelicula) {
+			String insert="";
+			boolean added=false;
+			
+			try {			
+				this.pStatement = this.connection.prepareStatement("INSERT INTO pelicula (nombre_pelicula,"
+						+ "duracion_minutos, id_estudio) VALUES(?,?,?)");
+				this.pStatement.setString(1, pelicula.getNombre());
+				this.pStatement.setInt(2, pelicula.getDuracionMinutos());
+				this.pStatement.setInt(3, pelicula.getId_estudio());
+				
+				added = this.pStatement.executeUpdate()>0;
+														
+			    return added;
+			}catch(SQLException e) {
+				e.printStackTrace();
+				return added;
+			}
+		}
 	//Método para eliminar registros a la tabla de uno en uno
 
 }

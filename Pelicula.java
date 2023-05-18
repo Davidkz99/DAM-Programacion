@@ -2,7 +2,6 @@ package dam.tema8.proyecto;
 
 import java.util.Objects;
 
-
 public class Pelicula {
 	public static final String CAMPOS = "id_pelicula, nombre_pelicula, duracion_minutos";
 	private int id;
@@ -79,4 +78,3 @@ public class Pelicula {
 	
 	
 }
-

@@ -17,7 +17,8 @@ public class Conexion {
 			DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());			
 
 			//crear un objeto de conexión
-			this.connection = DriverManager.getConnection(url);			
+			this.connection = DriverManager.getConnection(url);		
+			
 		} catch (SQLException e) {			
 			e.printStackTrace();
 		}

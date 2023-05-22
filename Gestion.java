@@ -1,8 +1,4 @@
 package dam.tema8.proyecto;
-/**
- * Clase para gestionar una base de datos.
- * @author David
- */
 //Importación de paquetes para la gestión de la base de datos.
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,7 +8,6 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 //Importación de paquetes para la exportación de la base de datos
 import java.io.File;
 import javax.xml.parsers.DocumentBuilder;
@@ -23,7 +18,11 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
+import org.w3c.dom.NodeList;
+/**
+ * Clase para gestionar una base de datos.
+ * @author David
+ */
 public class Gestion {
 	private Conexion conexion=null;
 	//Apartado 1
@@ -1275,4 +1274,119 @@ public class Gestion {
 			this.conexion.disconnect();
 		}
 	}
+	
+	/**
+	 * Método para importar en una tabla existente los datos de una tabla guardados en un archivo xml.
+	 * @param filePath
+	 */
+	public boolean importarEstudios(String filePath) {
+		boolean importado = false;
+		Connection connection=null;
+		PreparedStatement pStatement;
+        try {
+			connection = DriverManager.getConnection(this.conexion.getConnectionString());
+			this.conexion.conectar(connection);
+			if(!this.conexion.estaConectado());
+			connection = this.conexion.getConnection();
+			//Creo una instancia del DocumentBuilder.
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            //Creo un objeto de tipo Document que contiene la ruta.
+            Document document = builder.parse(new File(filePath));
+            //Obtengo una lista de elementos del documento.
+            NodeList nodeList = document.getElementsByTagName("fila");
+            //Itero sobre los elementos
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                Element element = (Element) nodeList.item(i);
+                //Obtengo los valores de las columnas del elemento.
+                //El método getTextContent devuelve el contenido de texto del nodo actual.
+                String columna1 = element.getElementsByTagName("id_estudio").item(0).getTextContent();
+                String columna2 = element.getElementsByTagName("nombre_estudio").item(0).getTextContent();
+                pStatement = connection.prepareStatement("INSERT INTO ImporteEstudio (id_estudio, "
+                		+ "nombre_estudio) VALUES(?,?)");
+                pStatement.setString(1, columna1);
+                pStatement.setString(2, columna2);
+                importado = pStatement.executeUpdate()>0;
+                pStatement.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            this.conexion.disconnect();
+        }
+		return importado;
+    }
+	
+	public boolean importarSeries(String filePath) {
+		boolean importado = false;
+		Connection connection=null;
+		PreparedStatement pStatement;
+        try {
+			connection = DriverManager.getConnection(this.conexion.getConnectionString());
+			this.conexion.conectar(connection);
+			if(!this.conexion.estaConectado());
+			connection = this.conexion.getConnection();
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document document = builder.parse(new File(filePath));
+            NodeList nodeList = document.getElementsByTagName("fila");
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                Element element = (Element) nodeList.item(i);
+                String columna1 = element.getElementsByTagName("id_serie").item(0).getTextContent();
+                String columna2 = element.getElementsByTagName("nombre_serie").item(0).getTextContent();
+                String columna3 = element.getElementsByTagName("numero_episodios").item(0).getTextContent();
+                String columna4 = element.getElementsByTagName("id_estudio").item(0).getTextContent();
+                pStatement = connection.prepareStatement("INSERT INTO ImporteSerie (id_serie, "
+                		+ "nombre_serie, numero_episodios, id_estudio) VALUES(?,?,?,?)");
+                pStatement.setString(1, columna1);
+                pStatement.setString(2, columna2);
+                pStatement.setString(3, columna3);
+                pStatement.setString(4, columna4);
+
+                importado = pStatement.executeUpdate()>0;
+                pStatement.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            this.conexion.disconnect();
+        }
+		return importado;
+    }
+	
+	public boolean importarPeliculas(String filePath) {
+		boolean importado = false;
+		Connection connection=null;
+		PreparedStatement pStatement;
+        try {
+			connection = DriverManager.getConnection(this.conexion.getConnectionString());
+			this.conexion.conectar(connection);
+			if(!this.conexion.estaConectado());
+			connection = this.conexion.getConnection();
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document document = builder.parse(new File(filePath));
+            NodeList nodeList = document.getElementsByTagName("fila");
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                Element element = (Element) nodeList.item(i);
+                String columna1 = element.getElementsByTagName("id_pelicula").item(0).getTextContent();
+                String columna2 = element.getElementsByTagName("nombre_pelicula").item(0).getTextContent();
+                String columna3 = element.getElementsByTagName("duracion_minutos").item(0).getTextContent();
+                String columna4 = element.getElementsByTagName("id_estudio").item(0).getTextContent();
+                pStatement = connection.prepareStatement("INSERT INTO ImportePelicula (id_pelicula, "
+                		+ "nombre_pelicula, duracion_minutos, id_estudio) VALUES(?,?,?,?)");
+                pStatement.setString(1, columna1);
+                pStatement.setString(2, columna2);
+                pStatement.setString(3, columna3);
+                pStatement.setString(4, columna4);
+                importado = pStatement.executeUpdate()>0;
+                pStatement.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            this.conexion.disconnect();
+        }
+		return importado;
+    }
 }

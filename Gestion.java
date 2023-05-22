@@ -1026,7 +1026,7 @@ public class Gestion {
 			//Creo un nuevo documento.
 			document = documentBuilder.newDocument();
 			//Creo el elemento raíz del documento.
-			raiz = document.createElement("Películas");
+			raiz = document.createElement("Estudios");
 			//Con el método appendChild, podremos añadir la raíz al documento.
 			document.appendChild(raiz);
 			//Preparo la query.
@@ -1115,7 +1115,7 @@ public class Gestion {
 			//Creo un nuevo documento.
 			document = documentBuilder.newDocument();
 			//Creo el elemento raíz del documento.
-			raiz = document.createElement("Películas");
+			raiz = document.createElement("Series");
 			//Con el método appendChild, podremos añadir la raíz al documento.
 			document.appendChild(raiz);
 			//Preparo la query.

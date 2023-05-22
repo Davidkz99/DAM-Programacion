@@ -4,7 +4,6 @@ package dam.tema8.proyecto;
  * @author David
  */
 //Importación de paquetes para la gestión de la base de datos.
-import java.rmi.AlreadyBoundException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -30,7 +29,7 @@ public class Gestion {
 	//Apartado 1
 	/**
 	 * Constructor especializado en inicializar objetos
-	 * de tipo DatabaseManager a partir de un objeto de conexión
+	 * de tipo Gestión a partir de un objeto de conexión
 	 * que no puede ser nulo.
 	 * @param Objeto de tipo conexión.
 	 */
@@ -77,7 +76,6 @@ public class Gestion {
 			//Finalmente cierro la conexión.
 			this.conexion.disconnect();
 		}
-		System.out.println("Mostrando todos los estudios:");
 		return estudios;
 	}
 
@@ -138,7 +136,6 @@ public class Gestion {
 			//Finalmente cierro la conexión.
 			this.conexion.disconnect();
 		}
-		System.out.println("Mostrando todos las series:");
 		return series;
 	}
 
@@ -199,7 +196,6 @@ public class Gestion {
 			//Finalmente cierro la conexión.
 			this.conexion.disconnect();
 		}
-		System.out.println("Mostrando todos las películas:");
 		return peliculas;
 	}
 
@@ -209,7 +205,7 @@ public class Gestion {
 	 * todos los estudios filtrados por un HashMap pertenecientes a la base de datos.
 	 * @return Todos los estudios que pertenezcan a la base de datos.
 	 */
-	public ArrayList<Estudio> getEstudios(HashMap<String,Object> filter) throws Exception{
+	public ArrayList<Estudio> getEstudios(HashMap<String,Object> filter) {
 		ArrayList<Estudio> estudiosFiltrados = null;
 		int i=0, type=Types.VARCHAR;
 		String whereData="";
@@ -261,15 +257,12 @@ public class Gestion {
 			//Cierro el flujo.
 			pStatement.close();
 			rs.close();
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new Exception("Error al filtrar la tabla. Es posible que una o varias columnas que has"
-					+ " insertado no coincidan con las de la base de datos.");
 		} finally {
 			//Finalmente cierro la conexión.
 			this.conexion.disconnect();
 		}
-		System.out.println("Mostrando estudios filtrados:");
 		return estudiosFiltrados;
 	}
 
@@ -280,10 +273,8 @@ public class Gestion {
 	 * 		  String: Columna de la tabla por la que desees filtrar.
 	 * 		  Object: Valor ubicado en la columna especificada.
 	 * @return Todas las series filtradas según el tipo de filtrado que obtenga de objeto de tipo HashMap.
-	 * @throws Excepción debido a que es posible que los valores que se han insertado
-	 * en el objeto de tipo HashMap no coinciden con los de la tabla de la base de datos.
 	 */
-	public ArrayList<Serie> getSeries(HashMap<String,Object> filter) throws Exception{
+	public ArrayList<Serie> getSeries(HashMap<String,Object> filter) {
 		ArrayList<Serie> seriesFiltradas = null;
 		int i=0, type=Types.VARCHAR;
 		String whereData="";
@@ -352,15 +343,12 @@ public class Gestion {
 			//Cierro el flujo principal.
 			psSerie.close();
 			rsSerie.close();
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new Exception("Error al filtrar la tabla. Es posible que una o varias columnas que has"
-					+ " insertado no coincidan con las de la base de datos.");
 		} finally {
 			//Finalmente cierro la conexión.
 			this.conexion.disconnect();
 		}
-		System.out.println("Mostrando series filtradas:");
 		return seriesFiltradas;
 	}
 
@@ -371,10 +359,8 @@ public class Gestion {
 	 * 		  String: Columna de la tabla por la que desees filtrar.
 	 * 		  Object: Valor ubicado en la columna especificada.
 	 * @return Todas las películas filtradas según el tipo de filtrado que obtenga de objeto de tipo HashMap.
-	 * @throws Excepción debido a que es posible que los valores que se han insertado
-	 * en el objeto de tipo HashMap no coinciden con los de la tabla de la base de datos.
 	 */
-	public ArrayList<Pelicula> getPeliculas(HashMap<String,Object> filter) throws Exception{
+	public ArrayList<Pelicula> getPeliculas(HashMap<String,Object> filter) {
 		ArrayList<Pelicula> peliculasFiltradas = null;
 		int i=0, type=Types.VARCHAR;
 		String whereData="";
@@ -443,20 +429,64 @@ public class Gestion {
 			//Cierro el flujo principal
 			psPelicula.close();
 			rsPelicula.close();
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new Exception("Error al filtrar la tabla. Es posible que una o varias columnas que has"
-					+ " insertado no coincidan con las de la base de datos.");
 		} finally {
 			//Finalmente cierro la conexión.
 			this.conexion.disconnect();
 		}
-		System.out.println("Mostrando películas filtradas:");
 		return peliculasFiltradas;
 	}
 
 	//Apartado 2.3
 	//Se pueden obtener los datos de una consulta de manera ordenada por alguno de los campos seleccionados
+	public ArrayList<Estudio> getEstudios(Ordenacion... columnOrder) {
+		ArrayList<Estudio> estudiosOrdenados = new ArrayList<Estudio>();
+		String ordenacion=" ORDER BY ";
+		String consulta = "SELECT id_estudio, nombre_estudio FROM estudio";
+		Connection connection=null;
+		PreparedStatement psEstudio=null;
+		ResultSet resultSet;
+		try {
+			//Se abre la conexión usando la cadena de conexión guardada en la clase de conexión
+			connection = DriverManager.getConnection(this.conexion.getConnectionString());
+			//Se guarda el objeto de conexión una vez abierto
+			this.conexion.conectar(connection);
+			//Compruebo si la conexión no está abierta, en este caso devuelvo el array vacío.
+			if(!this.conexion.estaConectado()) return estudiosOrdenados;
+			//Guardo la conexión dentro del objeto.
+			connection = this.conexion.getConnection();
+			//Bucle for para aladir al objeto de tipo String 
+			//el número de la columna y el método de ordenación
+			for(Ordenacion column:columnOrder) {
+				ordenacion+=column.getIndex() + " " + column.getOrder() + ",";
+			}
+			//Condición para comprobar la longitud final del string y concatenarlo a la consulta.
+			if(ordenacion.length()>10) {
+				ordenacion = ordenacion.substring(0,ordenacion.length()-1);
+				consulta+=ordenacion;
+			}
+			//Preparo la query.
+			psEstudio = connection.prepareStatement(consulta);
+			//Realizo la query
+			resultSet = psEstudio.executeQuery();
+			//Itero sobre los resultados a la vez que realizo una query secundaria en la que buscaré
+			//y añadiré a la serie los valores que corresponden a cierto id_estudio.
+			while(resultSet.next()) {
+				estudiosOrdenados.add(new Estudio(resultSet.getInt(1),
+						resultSet.getString(2)));
+			}
+			//Cierro el flujo principal.
+			resultSet.close();
+		} catch (SQLException e) {			
+			e.printStackTrace();
+		} finally {
+			//Finalmente cierro la conexión.
+			this.conexion.disconnect();
+		}
+		return estudiosOrdenados;
+	}
+	
 	/**
 	 * 
 	 * @param Id del estudio que se tiene de referencia para buscar películas
@@ -464,11 +494,8 @@ public class Gestion {
 	 * el número de la columna que queremos obtener seguido 
 	 * de si lo queremos mostrar de manera ascendente o descendente
 	 * @return Todas las series que coincidan con la id del estudio aplicando el objeto de tipo Ordenación.
-	 * @throws Excepción indicando que el número de columnas puede ser erróneo en caso de que
-	 * insertemos un número superior a las existentes en la base de datos. También puede significar
-	 * que hayamos escrito mal el método de ordenación, ya que debe ser "ASC" o "DESC".
 	 */
-	public ArrayList<Serie> getSeries(String id_estudio, Ordenacion... columnOrder) throws Exception{
+	public ArrayList<Serie> getSeries(String id_estudio, Ordenacion... columnOrder) {
 		ArrayList<Serie> seriesOrdenadas = new ArrayList<Serie>();
 		Estudio estudio = null;
 		String ordenacion=" ORDER BY ";
@@ -525,15 +552,12 @@ public class Gestion {
 			//Cierro el flujo principal.
 			psSerie.close();
 			rsSerie.close();
-		} catch (Exception e) {			
+		} catch (SQLException e) {			
 			e.printStackTrace();
-			throw new Exception("El número de columnas o el método de ordenación es erróneo. "
-					+ "Vuelve a intentarlo.");
 		} finally {
 			//Finalmente cierro la conexión.
 			this.conexion.disconnect();
 		}
-		System.out.println("Mostrando series ordenadas:");
 		return seriesOrdenadas;
 	}
 
@@ -544,11 +568,8 @@ public class Gestion {
 	 * el número de la columna que queremos obtener seguido 
 	 * de si lo queremos mostrar de manera ascendente o descendente
 	 * @return Todas las películas que coincidan con la id del estudio aplicando el objeto de tipo Ordenación.
-	 * @throws Excepción indicando que el número de columnas puede ser erróneo en caso de que
-	 * insertemos un número superior a las existentes en la base de datos. También puede significar
-	 * que hayamos escrito mal el método de ordenación, ya que debe ser "ASC" o "DESC".
 	 */
-	public ArrayList<Pelicula> getPeliculas(String id_estudio, Ordenacion... columnOrder) throws Exception{
+	public ArrayList<Pelicula> getPeliculas(String id_estudio, Ordenacion... columnOrder) {
 		ArrayList<Pelicula> peliculasOrdenadas = new ArrayList<Pelicula>();
 		Estudio estudio = null;
 		String ordenacion=" ORDER BY ";
@@ -605,15 +626,12 @@ public class Gestion {
 			//Cierro el flujo principal.
 			psPelicula.close();
 			rsPelicula.close();
-		} catch (Exception e) {			
+		} catch (SQLException e) {			
 			e.printStackTrace();
-			throw new Exception("El número de columnas o el método de ordenación es erróneo. "
-					+ "Vuelve a intentarlo.");
 		} finally {
 			//Finalmente cierro la conexión.
 			this.conexion.disconnect();
 		}
-		System.out.println("Mostrando películas ordenadas:");
 		return peliculasOrdenadas;
 	}
 
@@ -625,7 +643,7 @@ public class Gestion {
 	 * @param Objeto de tipo estudio que vamos a editar.
 	 * @return Mensaje validando o no la acción del método.
 	 */
-	public boolean editar(Estudio estudio) {
+	public boolean editar(Estudio estudio) throws Exception{
 		boolean editado = false;
 		Connection connection=null;
 		PreparedStatement pStatement=null;
@@ -647,11 +665,13 @@ public class Gestion {
 			pStatement.close();
 		}catch(SQLException e) {
 			e.printStackTrace();
+			throw new SQLException("Error al editar un registro. "
+					+ "Se está intentando editar un registro que contiene un id de estudio que no existe "
+					+ "en la base de datos.");
 		} finally {
 			//Finalmente cierro la conexión.
 			this.conexion.disconnect();
 		}
-		System.out.print("Editar estudio: ");
 		//Devuelve falso o verdadero.
 		return editado;
 	}
@@ -661,8 +681,6 @@ public class Gestion {
 	 * ubicado en la tabla de la base de datos.
 	 * @param Objeto de tipo serie que vamos a editar.
 	 * @return Mensaje validando o no la acción del método.
-	 * @throws Excepción de tipo NullPointerException debido a que el objeto contiene una id de estudio
-	 * que no coincide en la base de datos.
 	 */
 	public boolean editar(Serie serie) throws Exception{
 		boolean editado = false;
@@ -687,13 +705,13 @@ public class Gestion {
 			pStatement.close();
 		}catch(SQLException e) {
 			e.printStackTrace();
-			throw new NullPointerException("Error al editar un registro. "
-					+ "Se está intentando editar un registro cuya id de estudio no existe en la base de datos.");
+			throw new SQLException("Error al editar un registro. "
+					+ "Se está intentando editar un registro que contiene un id de estudio que no existe "
+					+ "en la base de datos.");
 		} finally {
 			//Finalmente cierro la conexión.
 			this.conexion.disconnect();
 		}
-		System.out.print("Editar serie: ");
 		//Devuelve falso o verdadero.
 		return editado;
 	}
@@ -703,8 +721,6 @@ public class Gestion {
 	 * ubicado en la tabla de la base de datos.
 	 * @param Objeto de tipo película que vamos a editar.
 	 * @return Mensaje validando o no la acción del método.
-	 * @throws Excepción de tipo NullPointerException debido a que el objeto contiene una id de estudio
-	 * que no coincide en la base de datos.
 	 */
 	public boolean editar(Pelicula pelicula) throws Exception {
 		boolean editado = false;
@@ -729,13 +745,13 @@ public class Gestion {
 			pStatement.close();
 		}catch(SQLException e) {
 			e.printStackTrace();
-			throw new NullPointerException("Error al editar un registro. "
-					+ "Se está intentando editar un registro cuya id de estudio no existe en la base de datos.");
+			throw new SQLException("Error al editar un registro. "
+					+ "Se está intentando editar un registro que contiene un id de estudio que no existe "
+					+ "en la base de datos.");
 		} finally {
 			//Finalmente cierro la conexión.
 			this.conexion.disconnect();
 		}
-		System.out.print("Editar película: ");
 		//Devuelve falso o verdadero.
 		return editado;
 	}
@@ -773,13 +789,12 @@ public class Gestion {
 			pStatement.close();
 		}catch(SQLException e) {
 			e.printStackTrace();
-			throw new AlreadyBoundException("Error al añadir un registro. "
+			throw new SQLException("Error al añadir un registro. "
 					+ "Constructor del estudio incorrecto o id ya existente en la base de datos.");
 		} finally {
 			//Finalmente cierro la conexión.
 			this.conexion.disconnect();
 		}
-		System.out.print("Crear estudio: ");
 		//Devuelve falso o verdadero.
 		return añadido;
 	}
@@ -817,13 +832,12 @@ public class Gestion {
 			pStatement.close();
 		}catch(SQLException e) {
 			e.printStackTrace();
-			throw new AlreadyBoundException("Error al añadir un registro. "
+			throw new SQLException("Error al añadir un registro. "
 					+ "Constructor del estudio incorrecto o id ya existente en la base de datos.");
 		} finally {
 			//Finalmente cierro la conexión.
 			this.conexion.disconnect();
 		}
-		System.out.print("Crear serie: ");
 		//Devuelve falso o verdadero.
 		return añadido;
 	}
@@ -833,7 +847,6 @@ public class Gestion {
 	 * a su correspondiente tabla ubicada en la base de datos.
 	 * @param Objeto de tipo película que vamos a añadir.
 	 * @return Mensaje validando o no la acción del método.
-	 * @throws Excepción de tipo AlreadyBoundException 
 	 */
 	public boolean crear(Pelicula pelicula) throws Exception {
 		boolean añadido=false;
@@ -862,13 +875,12 @@ public class Gestion {
 			pStatement.close();
 		}catch(SQLException e) {
 			e.printStackTrace();
-			throw new AlreadyBoundException("Error al añadir un registro. "
+			throw new SQLException("Error al añadir un registro. "
 					+ "Constructor del estudio incorrecto o id ya existente en la base de datos.");
 		} finally {
 			//Finalmente cierro la conexión.
 			this.conexion.disconnect();
 		}
-		System.out.print("Crear película: ");
 		//Devuelve falso o verdadero.
 		return añadido;
 	}
@@ -906,7 +918,6 @@ public class Gestion {
 			//Finalmente cierro la conexión.
 			this.conexion.disconnect();
 		}
-		System.out.print("Borrar estudio: ");
 		//Devuelve falso o verdadero.
 		return borrado;			
 	}
@@ -942,7 +953,6 @@ public class Gestion {
 			//Finalmente cierro la conexión.
 			this.conexion.disconnect();
 		}
-		System.out.print("Borrar serie: ");
 		//Devuelve falso o verdadero.
 		return borrado;			
 	}
@@ -978,7 +988,6 @@ public class Gestion {
 			//Finalmente cierro la conexión.
 			this.conexion.disconnect();
 		}
-		System.out.print("Borrar película: ");
 		//Devuelve falso o verdadero.
 		return borrado;			
 	}
@@ -1071,8 +1080,6 @@ public class Gestion {
 				//Esbribo el contenido del documento XML en el archivo.
 				transformer.transform(source, result);
 			}
-			System.out.println("La tabla estudio se ha exportado a documento XML.");
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -1156,7 +1163,6 @@ public class Gestion {
 			//Cierro el flujo
 			resultSet.close();
 			pStatement.close();
-			connection.close();
 
 			//Creo el objeto Transformer para escribir el documento XML en un archivo.
 			//Objeto de la clase DOMSource que intermediará entre el transformador y el árbol DOM.
@@ -1176,8 +1182,6 @@ public class Gestion {
 				//Esbribo el contenido del documento XML en el archivo.
 				transformer.transform(source, result);
 			}
-			System.out.println("La tabla serie se ha exportado a documento XML.");
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -1261,7 +1265,6 @@ public class Gestion {
 			//Cierro el flujo
 			resultSet.close();
 			pStatement.close();
-			connection.close();
 
 			//Creo el objeto Transformer para escribir el documento XML en un archivo.
 			//Objeto de la clase DOMSource que intermediará entre el transformador y el árbol DOM.
@@ -1281,8 +1284,6 @@ public class Gestion {
 				//Esbribo el contenido del documento XML en el archivo.
 				transformer.transform(source, result);
 			}
-			System.out.println("La tabla película se ha exportado a documento XML.");
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

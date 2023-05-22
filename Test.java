@@ -11,7 +11,7 @@ public class Test {
 		// 1. Gestión de la conexión a la bbdd, sólo hay un objeto de conexión instanciado.
 		Conexion conexion = new Conexion("jdbc:mysql://localhost/Anime?user=root&password=usuario");
 		Gestion databaseManager = new Gestion(conexion);
-
+		
 		//Mostrar todos los estudios con todos sus atributos
 		ArrayList<Estudio> estudios = databaseManager.getEstudios();
 		System.out.println("Mostrando todos los estudios:");
@@ -67,7 +67,7 @@ public class Test {
 		System.out.println();
 		
 	    //Se pueden obtener los datos de una consulta de manera ordenada por alguno de los campos seleccionados
-		Ordenacion o1 = new Ordenacion(2, "ASC");
+		Ordenacion o1 = new Ordenacion(1, "ASC");
 		ArrayList<Estudio> estudiosOrdenados = databaseManager.getEstudios(o1);
 		System.out.println("Mostrando estudios ordenadas:");
 		for (Estudio estudio : estudiosOrdenados) {
@@ -95,11 +95,11 @@ public class Test {
 		Estudio e3 = new Estudio(3, "Bones");
 		Estudio e4 = new Estudio(4, "Estudio de prueba");
 
-		Pelicula pelicula = new Pelicula(12, "Película de prueba", 140, e1);
+		Pelicula pelicula = new Pelicula(12, "Película", 140, e1);
 		Serie serie = new Serie(23, "Serie de prueba", 13, e2);
 		
 		//Añadir un estudio, serie o película a la base de datos.
-//		boolean añadir = databaseManager.crear(serie);
+//		boolean añadir = databaseManager.crear(pelicula);
 //		System.out.println("Añadir:" + añadir);
 //		System.out.println();
 
@@ -119,27 +119,37 @@ public class Test {
 //		System.out.println();
 
 //		Editar un estudio, serie o película de la base de datos.
-//		boolean editar = databaseManager.editar(serie);
+//		boolean editar = databaseManager.editar(pelicula);
 //		System.out.println("Editar: " + editar);
 //		System.out.println();
 
+		//Exportar a documento XML.
+//		String ruta = "/home/usuario/Estudios.xml";
+//		System.out.println("Estudios exportados.");
+//		databaseManager.exportarEstudios(ruta);
+//		System.out.println();
 		
-		//Exportar estudios a documento XML.
-		String	ruta = "/home/usuario/Estudios.xml";
-		System.out.println("La tabla estudio se ha exportado a documento XML.");
-		databaseManager.exportarEstudios(ruta);
-		System.out.println();
+//		ruta = "/home/usuario/Series.xml";
+//		System.out.println("Series exportadas.");
+//		databaseManager.exportarSeries(ruta);
+//		System.out.println();
+
+//		ruta = "/home/usuario/Peliculas.xml";
+//		System.out.println("Peliculas exportadas.");
+//		databaseManager.exportarPeliculas(ruta);
+//		System.out.println();
 		
-		//Exportar series a documento XML.
-		ruta = "/home/usuario/Series.xml";
-		System.out.println("La tabla serie se ha exportado a documento XML.");
-		databaseManager.exportarSeries(ruta);
-		System.out.println();
-
-		//Exportar peliculas a documento XML.
-		ruta = "/home/usuario/Peliculas.xml";
-		System.out.println("La tabla película se ha exportado a documento XML.");
-		databaseManager.exportarPeliculas(ruta);
-
+		//Importar desde documento XML.
+//		ruta = "/home/usuario/Estudios.xml";
+//        System.out.println("Estudios importados: " + databaseManager.importarEstudios(ruta));
+//		System.out.println();
+		
+//		ruta = "/home/usuario/Series.xml";
+//		System.out.println("Series importadas: " + databaseManager.importarSeries(ruta));
+//		System.out.println();
+		
+//		ruta = "/home/usuario/Peliculas.xml";
+//		System.out.println("Películas importadas: " + databaseManager.importarPeliculas(ruta));
+//		System.out.println();
 	}
 }

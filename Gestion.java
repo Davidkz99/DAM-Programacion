@@ -28,9 +28,8 @@ public class Gestion {
 	private Conexion conexion=null;
 	//Apartado 1
 	/**
-	 * Constructor especializado en inicializar objetos
-	 * de tipo Gestión a partir de un objeto de conexión
-	 * que no puede ser nulo.
+	 * Constructor especializado en inicializar objetos de tipo Gestión 
+	 * a partir de un objeto de conexión que no puede ser nulo.
 	 * @param Objeto de tipo conexión.
 	 */
 	public Gestion(Conexion conexion) {
@@ -55,7 +54,7 @@ public class Gestion {
 			this.conexion.conectar(connection);
 			//Compruebo si la conexión no está abierta, en este caso devuelvo el array vacío.
 			if(!this.conexion.estaConectado()) return estudios;
-			//Guardo la conexión dentro del objeto.
+			//Obtengo la conexión establecida
 			connection = this.conexion.getConnection();
 			//Preparo la query.
 			pStatement = connection.prepareStatement("SELECT id_estudio, nombre_estudio FROM estudio");
@@ -99,7 +98,7 @@ public class Gestion {
 			this.conexion.conectar(connection);
 			//Compruebo si la conexión no está abierta, en este caso devuelvo el array vacío.
 			if(!this.conexion.estaConectado()) return series;
-			//Guardo la conexión dentro del objeto.
+			//Obtengo la conexión establecida
 			connection = this.conexion.getConnection();
 			//Preparo la query.
 			psSerie = connection.prepareStatement("SELECT id_serie, nombre_serie, "
@@ -113,6 +112,7 @@ public class Gestion {
 				psEstudio = connection.prepareStatement("SELECT * FROM estudio where id_estudio=?");
 				psEstudio.setInt(1, rsSerie.getInt(4));
 				rsEstudio = psEstudio.executeQuery();
+	            //Verifico si se obtuvo un resultado de estudio.
 				if(rsEstudio.next()) {
 					estudio = new Estudio(rsEstudio.getInt(1), rsEstudio.getString(2));
 				}
@@ -159,7 +159,7 @@ public class Gestion {
 			this.conexion.conectar(connection);
 			//Compruebo si la conexión no está abierta, en este caso devuelvo el array vacío.
 			if(!this.conexion.estaConectado()) return peliculas;
-			//Guardo la conexión dentro del objeto.
+			//Obtengo la conexión establecida
 			connection = this.conexion.getConnection();
 			//Preparo la query.
 			psPelicula = connection.prepareStatement("SELECT id_pelicula, nombre_pelicula, duracion_minutos, "
@@ -173,6 +173,7 @@ public class Gestion {
 				psEstudio = connection.prepareStatement("SELECT * FROM estudio where id_estudio=?");
 				psEstudio.setInt(1, rsPelicula.getInt(4));
 				rsEstudio = psEstudio.executeQuery();
+	            //Verifico si se obtuvo un resultado de estudio.
 				if(rsEstudio.next()) {
 					estudio = new Estudio(rsEstudio.getInt(1), rsEstudio.getString(2));
 				}
@@ -219,7 +220,7 @@ public class Gestion {
 			this.conexion.conectar(connection);
 			//Compruebo si la conexión no está abierta, en este caso devuelvo el array vacío.
 			if(!this.conexion.estaConectado()) return estudiosFiltrados;
-			//Guardo la conexión dentro del objeto.
+			//Obtengo la conexión establecida
 			connection = this.conexion.getConnection();
 			//Bucle for que permite guardar en un objeto de tipo String
 			//la manera en la que voy a filtrar la búsqueda de resultados.
@@ -291,7 +292,7 @@ public class Gestion {
 			this.conexion.conectar(connection);
 			//Compruebo si la conexión no está abierta, en este caso devuelvo el array vacío.
 			if(!this.conexion.estaConectado()) return seriesFiltradas;
-			//Guardo la conexión dentro del objeto.
+			//Obtengo la conexión establecida
 			connection = this.conexion.getConnection();
 			//Bucle for que permite recorrer el HashMap, guardándolo en un objeto de tipo String.
 			for(String key:filter.keySet()) {
@@ -326,6 +327,7 @@ public class Gestion {
 				psEstudio = connection.prepareStatement("SELECT * FROM estudio where id_estudio=?");
 				psEstudio.setInt(1, rsSerie.getInt(4));
 				rsEstudio = psEstudio.executeQuery();
+	            //Verifico si se obtuvo un resultado de estudio.
 				if(rsEstudio.next()) {
 					estudio = new Estudio(rsEstudio.getInt(1), rsEstudio.getString(2));
 				}
@@ -377,7 +379,7 @@ public class Gestion {
 			this.conexion.conectar(connection);
 			//Compruebo si la conexión no está abierta, en este caso devuelvo el array vacío.
 			if(!this.conexion.estaConectado()) return peliculasFiltradas;
-			//Guardo la conexión dentro del objeto.
+			//Obtengo la conexión establecida
 			connection = this.conexion.getConnection();
 			//Bucle for que permite recorrer el HashMap, guardándolo en un objeto de tipo String.
 			for(String key:filter.keySet()) {
@@ -412,6 +414,7 @@ public class Gestion {
 				psEstudio = connection.prepareStatement("SELECT * FROM estudio where id_estudio=?");
 				psEstudio.setInt(1, rsPelicula.getInt(4));
 				rsEstudio = psEstudio.executeQuery();
+	            //Verifico si se obtuvo un resultado de estudio.
 				if(rsEstudio.next()) {
 					estudio = new Estudio(rsEstudio.getInt(1), rsEstudio.getString(2));
 				}
@@ -440,6 +443,13 @@ public class Gestion {
 
 	//Apartado 2.3
 	//Se pueden obtener los datos de una consulta de manera ordenada por alguno de los campos seleccionados
+	/**
+	 * Método especializado para obtener todas los estudios de un estudio en concreto ordenadas.
+	 * @param Objeto de tipo Ordenacion que contendrá 
+	 * el número de la columna que queremos obtener seguido 
+	 * de si lo queremos mostrar de manera ascendente o descendente
+	 * @return Todas los estudios ordenados.
+	 */
 	public ArrayList<Estudio> getEstudios(Ordenacion... columnOrder) {
 		ArrayList<Estudio> estudiosOrdenados = new ArrayList<Estudio>();
 		String ordenacion=" ORDER BY ";
@@ -454,7 +464,7 @@ public class Gestion {
 			this.conexion.conectar(connection);
 			//Compruebo si la conexión no está abierta, en este caso devuelvo el array vacío.
 			if(!this.conexion.estaConectado()) return estudiosOrdenados;
-			//Guardo la conexión dentro del objeto.
+			//Obtengo la conexión establecida
 			connection = this.conexion.getConnection();
 			//Bucle for para aladir al objeto de tipo String 
 			//el número de la columna y el método de ordenación
@@ -463,6 +473,7 @@ public class Gestion {
 			}
 			//Condición para comprobar la longitud final del string y concatenarlo a la consulta.
 			if(ordenacion.length()>10) {
+	            //Elimino la última coma de la cláusula de ordenación.
 				ordenacion = ordenacion.substring(0,ordenacion.length()-1);
 				consulta+=ordenacion;
 			}
@@ -488,7 +499,7 @@ public class Gestion {
 	}
 	
 	/**
-	 * 
+	 * Método especializado para obtener todas las series de un estudio en concreto ordenadas.
 	 * @param Id del estudio que se tiene de referencia para buscar películas
 	 * @param Objeto de tipo Ordenacion que contendrá 
 	 * el número de la columna que queremos obtener seguido 
@@ -513,7 +524,7 @@ public class Gestion {
 			this.conexion.conectar(connection);
 			//Compruebo si la conexión no está abierta, en este caso devuelvo el array vacío.
 			if(!this.conexion.estaConectado()) return seriesOrdenadas;
-			//Guardo la conexión dentro del objeto.
+			//Obtengo la conexión establecida
 			connection = this.conexion.getConnection();
 			//Bucle for para aladir al objeto de tipo String 
 			//el número de la columna y el método de ordenación
@@ -522,6 +533,7 @@ public class Gestion {
 			}
 			//Condición para comprobar la longitud final del string y concatenarlo a la consulta.
 			if(ordenacion.length()>10) {
+	            //Elimino la última coma de la cláusula de ordenación.
 				ordenacion = ordenacion.substring(0,ordenacion.length()-1);
 				consulta+=ordenacion;
 			}
@@ -535,6 +547,7 @@ public class Gestion {
 				psEstudio = connection.prepareStatement("SELECT * FROM estudio where id_estudio=?");
 				psEstudio.setInt(1, rsSerie.getInt(4));
 				rsEstudio = psEstudio.executeQuery();
+	            //Verifico si se obtuvo un resultado de estudio.
 				if(rsEstudio.next()) {
 					estudio = new Estudio(rsEstudio.getInt(1), rsEstudio.getString(2));
 				}
@@ -562,7 +575,7 @@ public class Gestion {
 	}
 
 	/**
-	 * 
+	 * Método especializado para obtener todas las películas de un estudio en concreto ordenadas.
 	 * @param Id del estudio que se tiene de referencia para buscar series
 	 * @param Objeto de tipo Ordenacion que contendrá 
 	 * el número de la columna que queremos obtener seguido 
@@ -587,7 +600,7 @@ public class Gestion {
 			this.conexion.conectar(connection);
 			//Compruebo si la conexión no está abierta, en este caso devuelvo el array vacío.
 			if(!this.conexion.estaConectado()) return peliculasOrdenadas;
-			//Guardo la conexión dentro del objeto.
+			//Obtengo la conexión establecida
 			connection = this.conexion.getConnection();
 			//Bucle for para aladir al objeto de tipo String 
 			//el número de la columna y el método de ordenación
@@ -596,6 +609,7 @@ public class Gestion {
 			}
 			//Condición para comprobar la longitud final del string y concatenarlo a la consulta.
 			if(ordenacion.length()>10) {
+	            //Elimino la última coma de la cláusula de ordenación.
 				ordenacion = ordenacion.substring(0,ordenacion.length()-1);
 				consulta+=ordenacion;
 			}
@@ -609,6 +623,7 @@ public class Gestion {
 				psEstudio = connection.prepareStatement("SELECT * FROM estudio where id_estudio=?");
 				psEstudio.setInt(1, rsPelicula.getInt(4));
 				rsEstudio = psEstudio.executeQuery();
+	            //Verifico si se obtuvo un resultado de estudio.
 				if(rsEstudio.next()) {
 					estudio = new Estudio(rsEstudio.getInt(1), rsEstudio.getString(2));
 				}
@@ -643,7 +658,7 @@ public class Gestion {
 	 * @param Objeto de tipo estudio que vamos a editar.
 	 * @return Mensaje validando o no la acción del método.
 	 */
-	public boolean editar(Estudio estudio) throws Exception{
+	public boolean editar(Estudio estudio) {
 		boolean editado = false;
 		Connection connection=null;
 		PreparedStatement pStatement=null;
@@ -654,7 +669,7 @@ public class Gestion {
 			this.conexion.conectar(connection);
 			//Compruebo si la conexión no está abierta, en este caso devuelvo false en el boolean.
 			if(!this.conexion.estaConectado()) return false;
-			//Guardo la conexión dentro del objeto.
+			//Obtengo la conexión establecida
 			connection = this.conexion.getConnection();
 			//Preparo la query.
 			pStatement = connection.prepareStatement("UPDATE estudio SET nombre_estudio= '" + 
@@ -665,9 +680,6 @@ public class Gestion {
 			pStatement.close();
 		}catch(SQLException e) {
 			e.printStackTrace();
-			throw new SQLException("Error al editar un registro. "
-					+ "Se está intentando editar un registro que contiene un id de estudio que no existe "
-					+ "en la base de datos.");
 		} finally {
 			//Finalmente cierro la conexión.
 			this.conexion.disconnect();
@@ -682,7 +694,7 @@ public class Gestion {
 	 * @param Objeto de tipo serie que vamos a editar.
 	 * @return Mensaje validando o no la acción del método.
 	 */
-	public boolean editar(Serie serie) throws Exception{
+	public boolean editar(Serie serie) {
 		boolean editado = false;
 		Connection connection=null;
 		PreparedStatement pStatement=null;
@@ -693,7 +705,7 @@ public class Gestion {
 			this.conexion.conectar(connection);
 			//Compruebo si la conexión no está abierta, en este caso devuelvo false en el boolean.
 			if(!this.conexion.estaConectado()) return false;
-			//Guardo la conexión dentro del objeto.
+			//Obtengo la conexión establecida
 			connection = this.conexion.getConnection();
 			//Preparo la query.
 			pStatement = connection.prepareStatement("UPDATE serie SET nombre_serie= '" + serie.getNombre() +
@@ -705,9 +717,6 @@ public class Gestion {
 			pStatement.close();
 		}catch(SQLException e) {
 			e.printStackTrace();
-			throw new SQLException("Error al editar un registro. "
-					+ "Se está intentando editar un registro que contiene un id de estudio que no existe "
-					+ "en la base de datos.");
 		} finally {
 			//Finalmente cierro la conexión.
 			this.conexion.disconnect();
@@ -722,7 +731,7 @@ public class Gestion {
 	 * @param Objeto de tipo película que vamos a editar.
 	 * @return Mensaje validando o no la acción del método.
 	 */
-	public boolean editar(Pelicula pelicula) throws Exception {
+	public boolean editar(Pelicula pelicula) {
 		boolean editado = false;
 		Connection connection=null;
 		PreparedStatement pStatement=null;
@@ -733,7 +742,7 @@ public class Gestion {
 			this.conexion.conectar(connection);
 			//Compruebo si la conexión no está abierta, en este caso devuelvo false en el boolean.
 			if(!this.conexion.estaConectado()) return false;
-			//Guardo la conexión dentro del objeto.
+			//Obtengo la conexión establecida
 			connection = this.conexion.getConnection();
 			//Preparo la query.
 			pStatement = connection.prepareStatement("UPDATE pelicula SET nombre_pelicula= '" + pelicula.getNombre() +
@@ -745,9 +754,6 @@ public class Gestion {
 			pStatement.close();
 		}catch(SQLException e) {
 			e.printStackTrace();
-			throw new SQLException("Error al editar un registro. "
-					+ "Se está intentando editar un registro que contiene un id de estudio que no existe "
-					+ "en la base de datos.");
 		} finally {
 			//Finalmente cierro la conexión.
 			this.conexion.disconnect();
@@ -764,7 +770,7 @@ public class Gestion {
 	 * @param Objeto de tipo estudio para que pueda añadirlo.
 	 * @return Mensaje validando o no la acción del método.
 	 */
-	public boolean crear(Estudio estudio) throws Exception {
+	public boolean crear(Estudio estudio) {
 		boolean añadido=false;
 		Connection connection=null;
 		PreparedStatement pStatement=null;
@@ -775,12 +781,12 @@ public class Gestion {
 			this.conexion.conectar(connection);
 			//Compruebo si la conexión no está abierta, en este caso devuelvo false en el boolean.
 			if(!this.conexion.estaConectado()) return false;
-			//Guardo la conexión dentro del objeto.
+			//Obtengo la conexión establecida
 			connection = this.conexion.getConnection();
 			//Preparo la query.
 			pStatement = connection.prepareStatement("INSERT INTO estudio (id_estudio, "
 					+ "nombre_estudio) VALUES(?,?)");
-			//Guardo el resultado que corresponde al objeto que le he pasado al método.
+			//Guardo el resultado que corresponde al objeto que le he pasado al método según la columna.
 			pStatement.setInt(1, estudio.getId());
 			pStatement.setString(2, estudio.getNombre());
 			//Si se realizó la query, el valor es true.
@@ -789,8 +795,6 @@ public class Gestion {
 			pStatement.close();
 		}catch(SQLException e) {
 			e.printStackTrace();
-			throw new SQLException("Error al añadir un registro. "
-					+ "Constructor del estudio incorrecto o id ya existente en la base de datos.");
 		} finally {
 			//Finalmente cierro la conexión.
 			this.conexion.disconnect();
@@ -805,7 +809,7 @@ public class Gestion {
 	 * @param Objeto de tipo serie para que pueda añadirlo.
 	 * @return Mensaje validando o no la acción del método.
 	 */
-	public boolean crear(Serie serie) throws Exception {
+	public boolean crear(Serie serie) {
 		boolean añadido=false;
 		Connection connection=null;
 		PreparedStatement pStatement=null;
@@ -816,12 +820,12 @@ public class Gestion {
 			this.conexion.conectar(connection);
 			//Compruebo si la conexión no está abierta, en este caso devuelvo false en el boolean.
 			if(!this.conexion.estaConectado()) return false;
-			//Guardo la conexión dentro del objeto.
+			//Obtengo la conexión establecida
 			connection = this.conexion.getConnection();
 			//Preparo la query.
 			pStatement = connection.prepareStatement("INSERT INTO serie (id_serie, nombre_serie,"
 					+ "numero_episodios, id_estudio) VALUES(?,?,?,?)");
-			//Guardo el resultado que corresponde al objeto que le he pasado al método.
+			//Guardo el resultado que corresponde al objeto que le he pasado al método según la columna.
 			pStatement.setInt(1, serie.getId());
 			pStatement.setString(2, serie.getNombre());
 			pStatement.setInt(3, serie.getNumEpisodios());
@@ -832,8 +836,6 @@ public class Gestion {
 			pStatement.close();
 		}catch(SQLException e) {
 			e.printStackTrace();
-			throw new SQLException("Error al añadir un registro. "
-					+ "Constructor del estudio incorrecto o id ya existente en la base de datos.");
 		} finally {
 			//Finalmente cierro la conexión.
 			this.conexion.disconnect();
@@ -848,7 +850,7 @@ public class Gestion {
 	 * @param Objeto de tipo película que vamos a añadir.
 	 * @return Mensaje validando o no la acción del método.
 	 */
-	public boolean crear(Pelicula pelicula) throws Exception {
+	public boolean crear(Pelicula pelicula) {
 		boolean añadido=false;
 		Connection connection=null;
 		PreparedStatement pStatement=null;
@@ -859,12 +861,12 @@ public class Gestion {
 			this.conexion.conectar(connection);
 			//Compruebo si la conexión no está abierta, en este caso devuelvo false en el boolean.
 			if(!this.conexion.estaConectado()) return false;
-			//Guardo la conexión dentro del objeto.
+			//Obtengo la conexión establecida
 			connection = this.conexion.getConnection();
 			//Preparo la query.
 			pStatement = connection.prepareStatement("INSERT INTO pelicula (id_pelicula, nombre_pelicula,"
 					+ "duracion_minutos, id_estudio) VALUES(?,?,?,?)");
-			//Guardo el resultado que corresponde al objeto que le he pasado al método.
+			//Guardo el resultado que corresponde al objeto que le he pasado al método según la columna.
 			pStatement.setInt(1, pelicula.getId());
 			pStatement.setString(2, pelicula.getNombre());
 			pStatement.setInt(3, pelicula.getDuracionMinutos());
@@ -875,8 +877,6 @@ public class Gestion {
 			pStatement.close();
 		}catch(SQLException e) {
 			e.printStackTrace();
-			throw new SQLException("Error al añadir un registro. "
-					+ "Constructor del estudio incorrecto o id ya existente en la base de datos.");
 		} finally {
 			//Finalmente cierro la conexión.
 			this.conexion.disconnect();
@@ -904,7 +904,7 @@ public class Gestion {
 			this.conexion.conectar(connection);
 			//Compruebo si la conexión no está abierta, en este caso devuelvo false en el boolean.
 			if(!this.conexion.estaConectado()) return false;
-			//Guardo la conexión dentro del objeto.
+			//Obtengo la conexión establecida
 			connection = this.conexion.getConnection();
 			//Preparo la query.
 			pStatement = connection.prepareStatement("DELETE FROM estudio WHERE id_estudio=" + id);
@@ -939,7 +939,7 @@ public class Gestion {
 			this.conexion.conectar(connection);
 			//Compruebo si la conexión no está abierta, en este caso devuelvo false en el boolean.
 			if(!this.conexion.estaConectado()) return false;
-			//Guardo la conexión dentro del objeto.
+			//Obtengo la conexión establecida
 			connection = this.conexion.getConnection();
 			//Preparo la query.
 			pStatement = connection.prepareStatement("DELETE FROM serie WHERE id_serie=" + id);
@@ -974,7 +974,7 @@ public class Gestion {
 			this.conexion.conectar(connection);
 			//Compruebo si la conexión no está abierta, en este caso devuelvo false en el boolean.
 			if(!this.conexion.estaConectado()) return false;
-			//Guardo la conexión dentro del objeto.
+			//Obtengo la conexión establecida
 			connection = this.conexion.getConnection();
 			//Preparo la query.
 			pStatement = connection.prepareStatement("DELETE FROM pelicula WHERE id_pelicula=" + id);
@@ -1019,9 +1019,8 @@ public class Gestion {
 			this.conexion.conectar(connection);
 			//Compruebo si la conexión no está abierta.
 			if(!this.conexion.estaConectado());
-			//Guardo la conexión dentro del objeto.
+			//Obtengo la conexión establecida
 			connection = this.conexion.getConnection();
-			
 			//Creo una instancia del DocumentBuilder.
 			documentBuilderFactory = DocumentBuilderFactory.newInstance();
 			documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -1035,33 +1034,30 @@ public class Gestion {
 			pStatement = connection.prepareStatement("SELECT * FROM estudio");
 			//Realizo la query.
 			resultSet = pStatement.executeQuery();
-			//Itero sobre los resultados y agrego los elementos al documento.
+			//Mientras el resultset tenga registro, insertarlo en el documento.
 			while (resultSet.next()) {
 				//Creo un elemento al documento, que serán las filas.
 				Element fila = document.createElement("fila");
 				//El elemento raíz llamado película dispondrá de filas para clasificar las películas.
 				raiz.appendChild(fila);
-				
 				//Obtengo el valor correspondiente a la columna indicada, de la tabla pelicula.
 				String columna1 = resultSet.getString("id_estudio");
 				//Creo un nuevo elemento en el documento, que será la etiqueta
 				//que dentro contendrá el valor que le corresponde.
-				Element columna1Element = document.createElement("id_estudio");
+				Element element1 = document.createElement("id_estudio");
 				//Asigno el valor al elemento en el documento.
-				columna1Element.appendChild(document.createTextNode(columna1));
+				element1.appendChild(document.createTextNode(columna1));
 				//Finalmente, añado la columna con su valor insertado.
-				fila.appendChild(columna1Element);
-
+				fila.appendChild(element1);
 				String columna2 = resultSet.getString("nombre_estudio");
-				Element columna2Element = document.createElement("nombre_estudio");
-				columna2Element.appendChild(document.createTextNode(columna2));
-				fila.appendChild(columna2Element);
+				Element element2 = document.createElement("nombre_estudio");
+				element2.appendChild(document.createTextNode(columna2));
+				fila.appendChild(element2);
 			}
 			//Cierro el flujo
 			resultSet.close();
 			pStatement.close();
 			connection.close();
-
 			//Creo el objeto Transformer para escribir el documento XML en un archivo.
 			//Objeto de la clase DOMSource que intermediará entre el transformador y el árbol DOM.
 			source = new DOMSource(document);
@@ -1112,9 +1108,8 @@ public class Gestion {
 			this.conexion.conectar(connection);
 			//Compruebo si la conexión no está abierta.
 			if(!this.conexion.estaConectado());
-			//Guardo la conexión dentro del objeto.
+			//Obtengo la conexión establecida
 			connection = this.conexion.getConnection();
-			
 			//Creo una instancia del DocumentBuilder.
 			documentBuilderFactory = DocumentBuilderFactory.newInstance();
 			documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -1128,42 +1123,37 @@ public class Gestion {
 			pStatement = connection.prepareStatement("SELECT * FROM serie");
 			//Realizo la query.
 			resultSet = pStatement.executeQuery();
-			//Itero sobre los resultados y agrego los elementos al documento.
+			//Mientras el resultset tenga registro, insertarlo en el documento.
 			while (resultSet.next()) {
 				//Creo un elemento al documento, que serán las filas.
 				Element fila = document.createElement("fila");
 				//El elemento raíz llamado película dispondrá de filas para clasificar las películas.
 				raiz.appendChild(fila);
-				
 				//Obtengo el valor correspondiente a la columna indicada, de la tabla pelicula.
 				String columna1 = resultSet.getString("id_serie");
 				//Creo un nuevo elemento en el documento, que será la etiqueta
 				//que dentro contendrá el valor que le corresponde.
-				Element columna1Element = document.createElement("id_serie");
+				Element element1 = document.createElement("id_serie");
 				//Asigno el valor al elemento en el documento.
-				columna1Element.appendChild(document.createTextNode(columna1));
+				element1.appendChild(document.createTextNode(columna1));
 				//Finalmente, añado la columna con su valor insertado.
-				fila.appendChild(columna1Element);
-
+				fila.appendChild(element1);
 				String columna2 = resultSet.getString("nombre_serie");
-				Element columna2Element = document.createElement("nombre_serie");
-				columna2Element.appendChild(document.createTextNode(columna2));
-				fila.appendChild(columna2Element);
-
+				Element element2 = document.createElement("nombre_serie");
+				element2.appendChild(document.createTextNode(columna2));
+				fila.appendChild(element2);
 				String columna3 = resultSet.getString("numero_episodios");
-				Element columna3Element = document.createElement("numero_episodios");
-				columna3Element.appendChild(document.createTextNode(columna3));
-				fila.appendChild(columna3Element);
-
+				Element element3 = document.createElement("numero_episodios");
+				element3.appendChild(document.createTextNode(columna3));
+				fila.appendChild(element3);
 				String columna4 = resultSet.getString("id_estudio");
-				Element columna4Element = document.createElement("id_estudio");
-				columna4Element.appendChild(document.createTextNode(columna4));
-				fila.appendChild(columna4Element);
+				Element element4 = document.createElement("id_estudio");
+				element4.appendChild(document.createTextNode(columna4));
+				fila.appendChild(element4);
 			}
 			//Cierro el flujo
 			resultSet.close();
 			pStatement.close();
-
 			//Creo el objeto Transformer para escribir el documento XML en un archivo.
 			//Objeto de la clase DOMSource que intermediará entre el transformador y el árbol DOM.
 			source = new DOMSource(document);
@@ -1214,9 +1204,8 @@ public class Gestion {
 			this.conexion.conectar(connection);
 			//Compruebo si la conexión no está abierta.
 			if(!this.conexion.estaConectado());
-			//Guardo la conexión dentro del objeto.
+			//Obtengo la conexión establecida
 			connection = this.conexion.getConnection();
-			
 			//Creo una instancia del DocumentBuilder.
 			documentBuilderFactory = DocumentBuilderFactory.newInstance();
 			documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -1230,42 +1219,37 @@ public class Gestion {
 			pStatement = connection.prepareStatement("SELECT * FROM pelicula");
 			//Realizo la query.
 			resultSet = pStatement.executeQuery();
-			//Itero sobre los resultados y agrego los elementos al documento.
+			//Mientras el resultset tenga registro, insertarlo en el documento.
 			while (resultSet.next()) {
 				//Creo un elemento al documento, que serán las filas.
 				Element fila = document.createElement("fila");
 				//El elemento raíz llamado película dispondrá de filas para clasificar las películas.
 				raiz.appendChild(fila);
-				
 				//Obtengo el valor correspondiente a la columna indicada, de la tabla pelicula.
 				String columna1 = resultSet.getString("id_pelicula");
 				//Creo un nuevo elemento en el documento, que será la etiqueta
 				//que dentro contendrá el valor que le corresponde.
-				Element columna1Element = document.createElement("id_pelicula");
+				Element element1 = document.createElement("id_pelicula");
 				//Asigno el valor al elemento en el documento.
-				columna1Element.appendChild(document.createTextNode(columna1));
+				element1.appendChild(document.createTextNode(columna1));
 				//Finalmente, añado la columna con su valor insertado.
-				fila.appendChild(columna1Element);
-
+				fila.appendChild(element1);
 				String columna2 = resultSet.getString("nombre_pelicula");
-				Element columna2Element = document.createElement("nombre_pelicula");
-				columna2Element.appendChild(document.createTextNode(columna2));
-				fila.appendChild(columna2Element);
-
+				Element element2 = document.createElement("nombre_pelicula");
+				element2.appendChild(document.createTextNode(columna2));
+				fila.appendChild(element2);
 				String columna3 = resultSet.getString("duracion_minutos");
-				Element columna3Element = document.createElement("duracion_minutos");
-				columna3Element.appendChild(document.createTextNode(columna3));
-				fila.appendChild(columna3Element);
-
+				Element element3 = document.createElement("duracion_minutos");
+				element3.appendChild(document.createTextNode(columna3));
+				fila.appendChild(element3);
 				String columna4 = resultSet.getString("id_estudio");
-				Element columna4Element = document.createElement("id_estudio");
-				columna4Element.appendChild(document.createTextNode(columna4));
-				fila.appendChild(columna4Element);
+				Element element4 = document.createElement("id_estudio");
+				element4.appendChild(document.createTextNode(columna4));
+				fila.appendChild(element4);
 			}
 			//Cierro el flujo
 			resultSet.close();
 			pStatement.close();
-
 			//Creo el objeto Transformer para escribir el documento XML en un archivo.
 			//Objeto de la clase DOMSource que intermediará entre el transformador y el árbol DOM.
 			source = new DOMSource(document);

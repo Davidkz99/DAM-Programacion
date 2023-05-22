@@ -1,5 +1,9 @@
 package dam.tema8.proyecto;
-
+/**
+ * Clase que hace referencia a la tabla Estudio en la base de datos.
+ * @author David
+ *
+ */
 public class Estudio {
 	public static final String CAMPOS = "id_estudio, nombre_estudio";
 	private int id;
@@ -8,12 +12,18 @@ public class Estudio {
 		super();
 		this.id = id;
 	}
+	/**
+	 * Constructor para la creación de objetos de tipo estudio.
+	 * @param id id del estudio
+	 * @param nombre Nombre del estudio
+	 */
 	public Estudio(int id, String nombre) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
 	}
 
+	//Setter y getter
 	public int getId() {
 		return id;
 	}

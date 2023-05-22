@@ -1,7 +1,11 @@
 package dam.tema8.proyecto;
 
 import java.util.Objects;
-
+/**
+ * Clase que hace referencia a la tabla película en la base de datos.
+ * @author David
+ *
+ */
 public class Pelicula {
 	public static final String CAMPOS = "id_pelicula, nombre_pelicula, duracion_minutos";
 	private int id;
@@ -9,6 +13,9 @@ public class Pelicula {
 	private int duracionMinutos;
 	private Estudio estudio;
 	
+	/**
+	 * Constructor para la creación de objetos de tipo película.
+	 */
 	public Pelicula(int id, String nombre, int duracionMinutos, Estudio idEstudio) {
 		super();
 		this.id = id;
@@ -17,6 +24,7 @@ public class Pelicula {
 		this.estudio = idEstudio;
 	}
 
+	//Métodos setter y getters
 	public int getId() {
 		return id;
 	}

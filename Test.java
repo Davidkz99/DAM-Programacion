@@ -109,9 +109,9 @@ public class Test {
 //		System.out.println();
 
 		//Eliminar una serie de la base de datos.
-		boolean eliminarSerie = databaseManager.borrarSerie(23);
-		System.out.println("Eliminar serie: " + eliminarSerie);
-		System.out.println();
+//		boolean eliminarSerie = databaseManager.borrarSerie(23);
+//		System.out.println("Eliminar serie: " + eliminarSerie);
+//		System.out.println();
 
 		//Eliminar una película de la base de datos.
 //		boolean eliminarPelicula = databaseManager.borrarPelicula(12);

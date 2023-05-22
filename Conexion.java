@@ -10,34 +10,41 @@ import java.sql.SQLException;
  *
  */
 public class Conexion {
-	private Connection connection;
-	public boolean conectar(String url) {		
+	private Connection connection = null;
+	private String connectionString;
+	
+	public Conexion(String connectionString) {		
+		//guarda los datos de conexión
+		this.connectionString = connectionString;
 		try {
-			//cargar el driver
-			DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());			
-
-			//crear un objeto de conexión
-			this.connection = DriverManager.getConnection(url);		
-			
+			//registrar el controlador
+			DriverManager.registerDriver (new com.mysql.cj.jdbc.Driver());
 		} catch (SQLException e) {			
 			e.printStackTrace();
 		}
-		return connection==null?false:true;
+	}
+	/**
+	 * Guarda el objeto de conexión
+	 * @param connection
+	 * @return Si es distinto de null devuelve true
+	 */
+	public boolean conectar(Connection connection) {		
+		this.connection = connection;
+		return this.connection==null?false:true;
 	}
 
-	public boolean desconectar() {
+	public boolean disconnect() {
 		try {
+			if(this.connection==null) return true;
 			this.connection.close();
 			return true;
 		} catch (SQLException e) {			
 			return false;
 		}
 	}
-
 	public Connection getConnection() {
 		return this.connection;
 	}
-
 	public boolean estaConectado() {
 		try {
 			return !this.connection.isClosed();
@@ -45,5 +52,8 @@ public class Conexion {
 			e.printStackTrace();
 			return false;
 		}
+	}
+	public String getConnectionString() {
+		return this.connectionString;
 	}
 }
